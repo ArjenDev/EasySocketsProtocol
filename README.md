@@ -3,7 +3,7 @@ A lightweight sockets C# library with configurable protocol that supports serial
 
 In 3 little steps you can add a new type of message to the socket communication and directly build the logic inside the server and client.
 
-<h2>How to use the example Protocol implementation:</h2><br>
+<h2>How to use the protocol implementation example:</h2><br>
 -Define messages that implements the ISerializable interface.<br>
 -Create the PacketType enum values that correspond to these messages<br>
 -Create the mapping between packet types and messages in HeaderPacketMapping<br>
