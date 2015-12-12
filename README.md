@@ -88,6 +88,3 @@ static void Main(string[] args)
             
         }
 ```
-<h3>
-Future goals:</h3><br>
--Implement a callback pattern by extending the header with a callbackID. This way the client can request something from the server and when the response packet comes back to the client it can act upon it.
