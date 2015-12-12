@@ -10,13 +10,20 @@ In 3 little steps you can add a new type of message to the socket communication 
 
 <h2>How to use the client:</h2>
 
+CallBacks are optional. If an incoming message is new and/or not attached to a callBack, then OnNewPacket will be called.
+
 ```
 static void Main(string[] args)
         {
             client = new SocketClient<Header, BasePacket<Header>>(OnNewPacket);
             client.StartClient(12000);
 
-            client.Send(new HelloMessage() { Message = "Hi there" } );
+            client.Send(new HelloMessage() { Message = "Hi there" }, (responsePacket) =>
+            {
+                var helloMessageCallBack = PacketFactory.GetPacket<HelloMessage>(responsePacket);
+
+                Console.WriteLine("I'm a callback! The server messaged: " + helloMessageCallBack.Payload.Message);
+            });
             
             Console.ReadLine();
         }
