@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IHeader.cs" />
     <Compile Include="Packet.cs" />
     <Compile Include="BasePacket.cs" />
     <Compile Include="Serialization\ISerializable.cs" />

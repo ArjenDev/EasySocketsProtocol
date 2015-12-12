@@ -1,4 +1,5 @@
-﻿using EasySocketsProtocol.Protocol.Implementation;
+﻿using EasySocketsProtocol.Protocol;
+using EasySocketsProtocol.Protocol.Implementation;
 using EasySocketsProtocol.Protocol.Serialization;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace EasySocketsProtocol.Sockets
 {
-    public class SocketSender
+    public class SocketSender<HeaderType> where HeaderType : IHeader, ISerializable, new()
     {
         private Socket socket { get; set; }
         public SocketSender(Socket socket)
@@ -19,7 +20,29 @@ namespace EasySocketsProtocol.Sockets
 
         public string Send<T>(T obj) where T : ISerializable, new()
         {
+            return this.Send<T>(obj, null);
+        }
+
+        public string Send<T>(T obj, SocketCallBack<HeaderType>.OnCallBackDelegate callBack) where T : ISerializable, new()
+        {
             var header = HeaderFactory.CreateHeader(typeof(T));
+            var packet = PacketFactory.CreatePacket<T>(header, obj);
+
+            byte[] byteData = packet.GetMessage();
+
+            if (callBack != null)
+                SocketCallBack<HeaderType>.RegisterCallBack(packet.Header.CallBackID, callBack);
+
+            socket.BeginSend(byteData, 0, byteData.Length, 0, new AsyncCallback(SendCallback), socket);
+
+            return packet.Header.CallBackID;
+        }
+
+        public string SendToCallBack<T>(T obj, string callBackID) where T : ISerializable, new()
+        {
+            var header = HeaderFactory.CreateHeader(typeof(T));
+            header.CallBackID = callBackID;
+
             var packet = PacketFactory.CreatePacket<T>(header, obj);
 
             byte[] byteData = packet.GetMessage();

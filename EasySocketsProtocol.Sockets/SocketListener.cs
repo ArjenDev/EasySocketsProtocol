@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace EasySocketsProtocol.Sockets
 {
-    public class SocketListener<HeaderType, MyBasePacket> where HeaderType : ISerializable, new() where MyBasePacket : BasePacket<HeaderType>, new()
+    public class SocketListener<HeaderType, MyBasePacket> where HeaderType : IHeader, ISerializable, new() where MyBasePacket : BasePacket<HeaderType>, new()
     {
         public delegate void OnNewPacketDelegate(Socket socket, IPacket<HeaderType> packet);
         public OnNewPacketDelegate OnNewPacket;
@@ -62,7 +62,10 @@ namespace EasySocketsProtocol.Sockets
                         state.Packet.SetData(state.buffer.Take(bytesRead).ToArray());
                         Console.WriteLine("Received {0} bytes from server.", bytesRead);
 
-                        OnNewPacket(state.workSocket, state.Packet);
+                        var executedCallBack = SocketCallBack<HeaderType>.OnNewPacket(state.Packet);
+
+                        if (!executedCallBack)
+                            OnNewPacket(state.workSocket, state.Packet);
 
                         //Reset for new packets!
                         state = new SocketState<HeaderType>();

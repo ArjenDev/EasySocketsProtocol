@@ -13,11 +13,11 @@ using System.Threading.Tasks;
 
 namespace EasySocketsProtocol.Client
 {
-    public class SocketClient<HeaderType, MyBasePacket> where HeaderType : ISerializable, new() where MyBasePacket : BasePacket<Header>, new()
+    public class SocketClient<HeaderType, MyBasePacket> where HeaderType : IHeader, ISerializable, new() where MyBasePacket : BasePacket<Header>, new()
     {
         private Socket socket;
         private SocketListener<HeaderType, BasePacket<HeaderType>> listener;
-        private SocketSender sender;
+        private SocketSender<HeaderType> sender;
 
         //Delegate to call when we receive a new packet
         private SocketListener<HeaderType, BasePacket<HeaderType>>.OnNewPacketDelegate onNewPacketDelegate;
@@ -85,10 +85,14 @@ namespace EasySocketsProtocol.Client
             }
         }
 
+        public void Send<T>(T obj, SocketCallBack<HeaderType>.OnCallBackDelegate callBack) where T : ISerializable, new()
+        {
+            sender = new SocketSender<HeaderType>(socket);
+            sender.Send(obj, callBack);
+        }
         public void Send<T>(T obj) where T : ISerializable, new()
         {
-            sender = new SocketSender(socket);
-            sender.Send(obj);
+            this.Send(obj, null);
         }
     }
 }

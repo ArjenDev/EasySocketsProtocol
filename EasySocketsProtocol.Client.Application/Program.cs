@@ -17,10 +17,16 @@ namespace EasySocketsProtocol.Client.Application
             client = new SocketClient<Header, BasePacket<Header>>(OnNewPacket);
             client.StartClient(12000);
 
-            client.Send(new HelloMessage() { Message = "Hi there" } );
+            client.Send(new HelloMessage() { Message = "Hi there" }, (responsePacket) =>
+            {
+                var helloMessageCallBack = PacketFactory.GetPacket<HelloMessage>(responsePacket);
+
+                Console.WriteLine("I'm a callback! The server messaged: " + helloMessageCallBack.Payload.Message);
+            });
             
             Console.ReadLine();
         }
+
         static void OnNewPacket(Socket socket, IPacket<Header> packet)
         {
             //Determine what to do

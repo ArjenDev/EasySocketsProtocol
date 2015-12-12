@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace EasySocketsProtocol.Server
 {
-    public class SocketServer<HeaderType, MyBasePacket> where HeaderType : ISerializable, new() where MyBasePacket : BasePacket<HeaderType>, new()
+    public class SocketServer<HeaderType, MyBasePacket> where HeaderType : IHeader, ISerializable, new() where MyBasePacket : BasePacket<HeaderType>, new()
     {
         SocketListener<HeaderType, BasePacket<HeaderType>>.OnNewPacketDelegate onNewPacket;
 
@@ -32,19 +32,19 @@ namespace EasySocketsProtocol.Server
             IPAddress ipAddress = ipHostInfo.AddressList.FirstOrDefault(i => i.AddressFamily != AddressFamily.InterNetworkV6);
             IPEndPoint localEndPoint = new IPEndPoint(ipAddress, port);
             
-            Socket listener = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            Socket socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
             try
             {
-                listener.Bind(localEndPoint);
-                listener.Listen(100);
+                socket.Bind(localEndPoint);
+                socket.Listen(100);
 
                 while (true)
                 {
                     allDone.Reset();
 
                     Console.WriteLine("Waiting for a connection...");
-                    listener.BeginAccept(new AsyncCallback(AcceptCallback), listener);
+                    socket.BeginAccept(new AsyncCallback(AcceptCallback), socket);
                     
                     allDone.WaitOne();
                 }

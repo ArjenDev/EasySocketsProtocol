@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace EasySocketsProtocol.Sockets
 {
-    class SocketState<HeaderType> where HeaderType : ISerializable, new()
+    class SocketState<HeaderType> where HeaderType : IHeader, ISerializable, new()
     {
         public Socket workSocket = null;
         public const int BufferSize = 8192;

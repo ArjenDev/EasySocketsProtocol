@@ -31,7 +31,7 @@ namespace EasySocketsProtocol.Server.Application
             {
                 case PacketType.Ack:
                     //Sends an ack back to the client
-                    new SocketSender(socket).Send(new AckMessage());
+                    new SocketSender<Header>(socket).Send(new AckMessage());
                     break;
 
                 case PacketType.Hello:
@@ -42,7 +42,7 @@ namespace EasySocketsProtocol.Server.Application
                     Console.WriteLine(helloPacket.Payload.Message);
 
                     //Send some response
-                    new SocketSender(socket).Send(new HelloMessage() { Message = "Hi to you too :)" });
+                    new SocketSender<Header>(socket).SendToCallBack(new HelloMessage() { Message = "Hi to you too :)" }, packet.Header.CallBackID);
                     break;
             }
             
