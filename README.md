@@ -1,7 +1,17 @@
 # EasySocketsProtocol
-A lightweight sockets C# library with configurable protocol that supports serialization of objects. 
+A lightweight sockets C# library with the following key features:
+-Easily customizable/extendable protocol
+-Generic serialization of objects optimized for less bandwidth usage
+-Fast (creating/parsing packets: 1 million packets in 2 seconds)
 
-In 3 little steps you can add a new type of message to the socket communication and directly build the logic inside the server and client.
+I made this library as I could not find another library that supported optimized object serialization and an automatic translation between the byte stream and c# objects.
+
+The following projects are the implementation of the EasySocketsProtocol, these are the only files that need to be adapted to your situation:
+-EasyProtocol.Client
+-EasyProtocol.Server
+-EasyProtocol.Protocol.Implementation
+
+
 
 <h2>How to use the protocol implementation example:</h2><br>
 -Define messages that implements the ISerializable interface.<br>
